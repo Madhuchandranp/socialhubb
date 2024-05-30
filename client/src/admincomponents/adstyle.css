@@ -1,0 +1,20 @@
+.user-list {
+    padding: 20px;
+  }
+  
+  .user-list h2 {
+    margin-bottom: 20px;
+  }
+  
+  .user-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .user-list li {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  

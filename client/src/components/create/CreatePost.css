@@ -1,0 +1,38 @@
+/* CreatePost.css */
+.parent{
+    width: 80%;
+    margin: 10% auto;
+}
+.create-post {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .create-post-input,
+  .create-post-file {
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .create-post-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .create-post-button:hover {
+    background-color: #0056b3;
+  }
+  
