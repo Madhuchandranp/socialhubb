@@ -9,6 +9,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import SendIcon from '@mui/icons-material/Send';
 import Adminnavbar from "./Adminnavbar";
+import { toast } from "react-toastify";
 
 export default function Adminhome() {
   const [postData, setBannerData] = useState([]);
@@ -31,9 +32,16 @@ export default function Adminhome() {
       .catch((err) => console.log(err));
   }
 
-  const handleLike = (index) => {
-    // You can implement your like functionality here
-    console.log(`Liked post ${index}`);
+ 
+  const handleDeletePost = async (postId, imageName) => {
+    try {
+      await axios.post("http://localhost:5000/post/delete/:postId", { id: postId, name: imageName });
+      toast.success("Post deleted successfully");
+      fetchData(); // Refresh the list of posts after deletion
+    } catch (error) {
+      console.error("Failed to delete post", error);
+      toast.error("Failed to delete post");
+    }
   };
 
   return (
@@ -44,9 +52,11 @@ export default function Adminhome() {
           <div key={index} className="post-container">
             <div className="post-header">
               <div className="post-title">Posted by {post.name}</div>
-              <button className="like-button" onClick={() => handleLike(index)}>
-                Like
-              </button>
+              
+              <button
+                    className="delete-button"
+                    onClick={() => handleDeletePost(post._id, post.image)}>Delete
+                  </button>
             </div>
             <img
               className="post-image"

@@ -108,3 +108,16 @@
 .my-post{
   text-align: center;
 }
+.follow-button {
+  background-color: #008CBA; /* Blue background */
+  color: white; /* White text */
+  border: none; /* Remove borders */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  font-size: 16px; /* Increase font size */
+  margin: 10px; /* Add margin */
+}
+
+.follow-button:hover {
+  background-color: #007bb5; /* Darker blue background on hover */
+}

@@ -54,6 +54,7 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit">Login</button>
+        {/* <span><Link to="/RequestPasswordReset" style={{fontSize:"13px"}}>forget password</Link></span> */}
         <span className="auth-options">New User? <Link to="/signup">Signup</Link></span>
       </form>
     </div>

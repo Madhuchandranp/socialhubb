@@ -19,6 +19,9 @@ export default function Adminpage() {
  <Col xs={6} md={4}  style={{border:"1px solid", width:"4cm",height:"2cm",}}>
     <Link to="/Users">Users</Link>
   </Col>
+  <Col xs={6} md={4}  style={{border:"1px solid", width:"4cm",height:"2cm",}}>
+    <Link to="/AdminHome">posts</Link>
+  </Col>
 </Row>
 </Container>
         </div>

@@ -11,6 +11,7 @@ function CommentContainer({ id }) {
   const [comments, setComments] = useState([]);
   const [replyCommentId, setReplyCommentId] = useState(null);
   const [replies, setReplies] = useState({});
+  const [commentCount, setCommentCount] = useState(0);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -21,7 +22,7 @@ function CommentContainer({ id }) {
         toast.error("User information is missing");
         return;
       }
-      await axios.post(`http://localhost:5000/comment/`, {
+      await axios.post(`http://localhost:5000/comment/add`, {
         id,
         text: input,
         user: user.user.username,
@@ -55,9 +56,10 @@ function CommentContainer({ id }) {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/comment/${id}`);
+      const response = await axios.get(`http://localhost:5000/comment/comment/${id}`);
       console.log("Fetched comments:", response.data); // Log fetched data for debugging
       setComments(response.data.comments || []);
+      setCommentCount(response.data.commentCount || 0);
     } catch (error) {
       console.error("Failed to fetch comments:", error); // Log the error for debugging
       toast.error("Failed to fetch comments");
@@ -94,9 +96,14 @@ try {
     fetchComments();
     const refreshInterval = setInterval(fetchComments, 2000);
     return () => clearInterval(refreshInterval);
-    fetchReplies();
-
   }, []);
+  // useEffect(() => {
+  //   fetchReplies();
+  //   const refreshInterval = setInterval(fetchReplies, 2000);
+  //   // fetchReplies();
+  //   return () => clearInterval(refreshInterval);
+
+  // }, []);
 
   return (
     <div className="">
@@ -115,7 +122,6 @@ try {
             Submit
           </button>
         </form>
-       
         <div className="comments-section">
           {comments.length > 0 ? (
             comments?.map((data, index) => (

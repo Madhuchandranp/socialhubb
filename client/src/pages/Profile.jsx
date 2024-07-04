@@ -24,16 +24,17 @@ const Profile = () => {
     nav("/createpost");
   }
   const [postData, setPostData] = useState([]);
+  const [profileData, setProfileData] = useState({ followers: [], following: [] });
   const imagePath = "http://localhost:5000/files/";
 
   useEffect(() => {
     fetchData();
+    fetchProfileData();
     const refreshInterval = setInterval(fetchData, 2000);
-    // Clean up interval on component unmount
     return () => clearInterval(refreshInterval);
   }, []);
 
-  function fetchData() {
+  const fetchData=()=> {
     axios
       .post("http://localhost:5000/post/currentuser/get", {
         user: user.user.username,
@@ -45,22 +46,26 @@ const Profile = () => {
       .catch((err) => console.log(err));
   }
 
-  const handleLike = (index) => {
-    // You can implement your like functionality here
-    console.log(`Liked post ${index}`);
+  const fetchProfileData = () => {
+    axios
+      .get(`http://localhost:5000/auth/profile/${user.user._id}`)
+      .then((res) => setProfileData(res.data))
+      .catch((err) => console.log(err));
   };
+
 
   const handleDeletePost = async (postId, imageName) => {
     try {
       await axios.post("http://localhost:5000/post/delete/:postId", { id: postId, name: imageName });
       toast.success("Post deleted successfully");
-      fetchData(); // Refresh the list of posts after deletion
+      fetchData(); 
     } catch (error) {
       console.error("Failed to delete post", error);
       toast.error("Failed to delete post");
     }
   };
 
+ 
 
   return (
     <div className="">
@@ -74,6 +79,12 @@ const Profile = () => {
             </p>
             <p>
               <span className="key-name">Email:</span> {user.user.email}
+            </p>
+            <p>
+              <span className="key-name">Followers:</span> {profileData.followers.length}
+            </p>
+            <p>
+              <span className="key-name">Following:</span> {profileData.following.length}
             </p>
           </div>
           <div className="options">
@@ -95,12 +106,7 @@ const Profile = () => {
               <div key={index} className="post-container">
                 <div className="post-header">
                   <div className="post-title">Posted by {post.name}</div>
-                  <button
-                    className="like-button"
-                    onClick={() => handleLike(index)}
-                  >
-                    Like
-                  </button>
+
                   <button
                     className="delete-button"
                     onClick={() => handleDeletePost(post._id, post.image)}>Delete
@@ -115,14 +121,16 @@ const Profile = () => {
                   {post.description}
                 </div>
                 <div className="">
-            <Checkbox size="50px" style={{ fontSize: "30px", color: "gray" }} icon={<FavoriteBorderIcon />} checkedIcon={<Favorite sx={{ color: "red" }} />} />
+                  <Checkbox size="50px" style={{ fontSize: "30px", color: "gray" }} icon={<FavoriteBorderIcon />} checkedIcon={<Favorite sx={{ color: "red" }} />} />
 
-              <Checkbox style={{ fontSize: "30px", color: "gray" }} icon={<ChatBubbleOutlineIcon/>}className="comment-icon"
-                onClick={() => nav(`/post/${post._id}`, { replace: true }) }checkedIcon={<ChatBubbleIcon  />}/>
-            
-               <Checkbox style={{ fontSize: "30px", color: "gray" }} icon={<SendIcon />}className="comment-icon"
-                onClick={() => nav(`/Mailsend`, { replace: true }) }checkedIcon={<ChatBubbleIcon  />}/>
-            </div>
+                  <Checkbox style={{ fontSize: "30px", color: "gray" }} icon={<ChatBubbleOutlineIcon />} className="comment-icon"
+                    onClick={() => nav(`/post/${post._id}`, { replace: true })} checkedIcon={<ChatBubbleIcon />} />
+
+                  <Checkbox style={{ fontSize: "30px", color: "gray" }} icon={<SendIcon />} className="comment-icon"
+                    onClick={() => nav(`/Mailsend`, { replace: true })} checkedIcon={<ChatBubbleIcon />} />
+                
+               
+                </div>
               </div>
             ))}
           </div>

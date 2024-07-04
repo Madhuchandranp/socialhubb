@@ -1,39 +1,21 @@
-// const express = require('express');
-// const router = express.Router();
-// const Post = require('../models/admin');
 
-// // Handler for getting liked posts by the current user
-// exports.getLikedPosts = async (req, res) => {
-//   console.log("Get liked posts called");
-//   const { userId } = req.body; // Assuming userId is passed in the request body
-
-//   try {
-//     const likedPosts = await Post.find({ likes: userId });
-//     res.status(200).json(likedPosts);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "An error occurred" });
-//   }
-// };
-
-// module.exports = router;
-// controllers/authController.js
 const User = require("../model/User");
 const bcrypt = require("bcrypt");
+const Admin = require("../model/admin")
 
 exports.adminsignup = async (req, res) => {
   console.log("called");
   const { username, email, password } = req.body;
-  const existing = await User.findOne({ email });
+  const existing = await Admin.findOne({ email });
   if (existing) {
-    return res.status(400).json({ message: "User already exists" });
+    return res.status(400).json({ message: "admin already exists" });
   }
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
    try {
-    const newUser = await User.create({ username, email, password: hashedPassword });
-    res.status(200).json({ message: "User created successfully", user: newUser });
+    const newAdmin = await Admin.create({ username, email, password: hashedPassword });
+    res.status(200).json({ message: "Admin created successfully", admin: newAdmin });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -42,18 +24,18 @@ exports.adminsignup = async (req, res) => {
 exports.adminlogin = async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password);
-  const user = await User.findOne({ email });
-  if (!user) {
+  const admin = await Admin.findOne({ email });
+  if (!admin) {
     return res.status(400).json({ message: "Invalid email or password" });
   }
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) {
     return res.status(400).json({ message: "Invalid email or password" });
   }
 
   res.status(200).json({
     message: "Logged in successfully",
-    user: { email, username: user.username },
+    admin: { email, username: admin.username },
   });
 };
 

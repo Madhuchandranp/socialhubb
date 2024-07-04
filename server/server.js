@@ -22,7 +22,7 @@ app.use("/auth", authRoutes);
 app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
 app.use("/mail", mailRoutes);
-app.use("/admin",adminRoutes);
+app.use("/admin", adminRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

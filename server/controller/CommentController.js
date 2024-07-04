@@ -13,6 +13,7 @@ exports.createComment = async (req, res) => {
       user: req.body.user,
     };
     post.comments.push(comment);
+    post.commentCount += 1;
     await post.save();
     res.status(201).json({ message: "Comment added successfully", post: post });
   } catch (error) {
@@ -24,9 +25,9 @@ exports.createReply = async (req, res) => {
   console.log(req.params.commentId, "createReply");
   try {
     const post = await Post.findOneAndUpdate(
-      { "comments._id": req.params.commentId }, // Find the post containing the comment
-      { $push: { "comments.$.replies": req.body } }, // Add the reply to the comment's replies array
-      { new: true } // Return the updated post after modification
+      { "comments._id": req.params.commentId }, 
+      { $push: { "comments.$.replies": req.body } },
+      { new: true } 
     );
     if (!post) {
       return res.status(404).json({ message: "Post or comment not found" });
@@ -45,26 +46,23 @@ exports.getComments = async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    res.status(200).json({comments: post.comments });
+    res.status(200).json({comments: post.comments ,commentCount: post.comments.length });
   } catch (error) {
     console.log("Failed to get Comments", error);
   }
 };
 
+
 exports.getCommentReplies = async (req, res) => {
-  console.log(req.params.commentId, "getCommentReplies");
   try {
-    const post = await Post.findOne(
-      { "comments._id": req.params.commentId }, // Find the post containing the comment
-      { "comments.$": 1 } // Project only the specific comment with its replies
-    );
+    const commentId = req.params.commentId;
+    const post = await Post.findOne({ 'comments._id': commentId }, { 'comments.$': 1 });
     if (!post) {
-      return res.status(404).json({ message: "Post or comment not found" });
+      return res.status(404).json({ message: 'Comment not found' });
     }
-    const comment = post.comments.id(req.params.commentId);
+    const comment = post.comments.id(commentId);
     res.status(200).json({ comment });
   } catch (error) {
-    console.log("Failed to get Comment with Replies", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -75,7 +73,7 @@ exports.deleteComment = async (req, res) => {
   try {
     const post = await Post.findOneAndUpdate(
       { "comments._id": req.params.commentId }, // Find the post containing the comment
-      { $pull: { comments: { _id: req.params.commentId } } }, // Remove the comment
+      { $pull: { comments: { _id: req.params.commentId } }, $inc: { commentCount: -1 } }, // Remove the comment
       { new: true } // Return the updated post after modification
     );
     if (!post) {
